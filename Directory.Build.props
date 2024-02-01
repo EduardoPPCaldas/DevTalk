@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <RootNamespace>DevTalk.(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+  </PropertyGroup>
+</Project>

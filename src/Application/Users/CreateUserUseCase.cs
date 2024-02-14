@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using DevTalk.Application.Users.Interfaces;
 using DevTalk.Application.Utils;
 using DevTalk.Domain.Users;
 using DevTalk.Domain.Users.Errors;
@@ -9,12 +10,13 @@ using Microsoft.AspNetCore.Identity;
 namespace DevTalk.Application.Users;
 
 [GenerateAutomaticInterface]
-public class CreateUserUseCase(IValidator<CreateUserRequestDTO> validator, UserManager<User> userManager) : ICreateUserUseCase
+public class CreateUserUseCase(IValidator<CreateUserRequestDTO> validator, UserManager<User> userManager, ITokenHandler tokenHandler) : ICreateUserUseCase
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IValidator<CreateUserRequestDTO> _validator = validator;
+    private readonly ITokenHandler _tokenHandler = tokenHandler;
 
-    public async Task<Result<CreateUserResponseDTO>> ExecuteAsync(CreateUserRequestDTO dto, CancellationToken cancellationToken)
+    public async Task<Result<string>> ExecuteAsync(CreateUserRequestDTO dto, CancellationToken cancellationToken)
     {
         var validation = _validator.Validate(dto);
         if (!validation.IsValid)
@@ -44,6 +46,6 @@ public class CreateUserUseCase(IValidator<CreateUserRequestDTO> validator, UserM
             return Result.Fail(new CouldNotCreateUserError());
         }
 
-        return new CreateUserResponseDTO(dto.Email);
+        return _tokenHandler.GenerateToken(user);
     }
 }

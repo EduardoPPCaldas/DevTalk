@@ -1,4 +1,5 @@
-﻿using DevTalk.Domain.Users;
+﻿using DevTalk.Application.Users.Interfaces;
+using DevTalk.Domain.Users;
 using DevTalk.Infrastructure.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,8 @@ public static class InfrastructureDependencyInjection
         services.AddDbContext<UserDatabase>((sp, opt) =>
             opt.UseNpgsql(sp.GetRequiredService<IConfiguration>().GetConnectionString(UserDatabase.UserDatabaseConnectionString), 
             x => x.MigrationsAssembly(typeof(UserDatabase).Assembly.FullName)));
+
+        services.AddScoped<ITokenHandler, TokenHandler>();
 
         return services;
     }

@@ -16,6 +16,7 @@ public static class InfrastructureDependencyInjection
             x => x.MigrationsAssembly(typeof(UserDatabase).Assembly.FullName)));
 
         services.AddScoped<ITokenHandler, TokenHandler>();
+        services.AddScoped<IPhotoBucketHandler, PhotoBucketHandler>();
 
         return services;
     }

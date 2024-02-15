@@ -14,6 +14,7 @@ public class UserEndpoint : IEndpointDefinition
         var group = builder.MapGroup("users");
         group.MapPost("register", Register);
         group.MapPost("login", Login);
+        group.MapPut("upload-photo/{id}", UploadPhoto).DisableAntiforgery();
     }
 
     public static async Task<IResult> Register(
@@ -41,5 +42,21 @@ public class UserEndpoint : IEndpointDefinition
         }
 
         return Results.Ok(result.Value);
+    }
+
+    public static async Task<IResult> UploadPhoto(
+        [FromServices] IUploadPhotoUseCase useCase,
+        [FromRoute] Guid id,
+        IFormFile file,
+        CancellationToken cancellationToken)
+    {
+        using var fileStream = file.OpenReadStream();
+        var result = await useCase.ExecuteAsync(fileStream, file.FileName, id, cancellationToken);
+        if(result.IsFailed)
+        {
+            return result.MapToApiErrorResponse();
+        }
+
+        return Results.Ok();
     }
 }

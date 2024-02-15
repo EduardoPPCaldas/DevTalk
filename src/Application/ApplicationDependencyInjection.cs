@@ -12,6 +12,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
         services.AddScoped<IValidator<CreateUserRequestDTO>, CreateUserRequestDTOValidator>();
         services.AddScoped<ILoginUserUseCase, LoginUserUseCase>();
+        services.AddScoped<IUploadPhotoUseCase, UploadPhotoUseCase>();
 
         services
             .AddOptions<AuthOptions>()
